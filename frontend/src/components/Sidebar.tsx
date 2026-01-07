@@ -102,7 +102,9 @@ export default function Sidebar() {
                   }`} />
                   <div className="flex-1 min-w-0">
                     <div className="text-sm font-mono truncate">
-                      {account.username ? `@${account.username}` : account.sessionId}
+                      {account.firstName || account.username ? 
+                        `${account.firstName || ''} ${account.username ? `@${account.username}` : ''}`.trim() 
+                        : account.phone || account.sessionId}
                     </div>
                     <div className="flex items-center gap-2 mt-0.5">
                       {account.aiEnabled && (

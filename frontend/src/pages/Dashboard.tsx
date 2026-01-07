@@ -145,10 +145,12 @@ export default function Dashboard() {
                 }`} />
                 <div className="flex-1 min-w-0">
                   <p className="font-mono text-white truncate">
-                    {account.username ? `@${account.username}` : account.sessionId}
+                    {account.firstName || account.username ? 
+                      `${account.firstName || ''} ${account.username ? `@${account.username}` : ''}`.trim() 
+                      : account.phone || account.sessionId}
                   </p>
                   <p className="text-xs text-dark-500">
-                    ID: {account.sessionId}
+                    {account.phone || `ID: ${account.sessionId}`}
                   </p>
                 </div>
                 <div className="flex items-center gap-2">

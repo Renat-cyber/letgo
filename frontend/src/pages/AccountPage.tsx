@@ -116,14 +116,16 @@ export default function AccountPage() {
         <div className="flex-1">
           <div className="flex items-center gap-3">
             <h1 className="text-2xl font-display font-bold text-white">
-              {account.username ? `@${account.username}` : account.sessionId}
+              {account.firstName || account.username ? 
+                `${account.firstName || ''} ${account.username ? `@${account.username}` : ''}`.trim() 
+                : account.phone || account.sessionId}
             </h1>
             <div className={`w-3 h-3 rounded-full ${
               account.isRunning ? 'bg-neon-green animate-pulse' : 'bg-dark-500'
             }`} />
           </div>
           <p className="text-dark-500 font-mono text-sm">
-            Session: {account.sessionId}
+            {account.phone || `Session: ${account.sessionId}`}
           </p>
         </div>
         
