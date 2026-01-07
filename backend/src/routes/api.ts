@@ -160,6 +160,23 @@ router.post('/accounts/:id/sync-conversations', async (req: Request, res: Respon
   }
 });
 
+router.get('/accounts/:id/safety-stats', async (req: Request, res: Response) => {
+  const accountId = parseInt(req.params.id);
+  const account = getAccountById(accountId);
+  
+  if (!account) {
+    return res.status(404).json({ error: 'Account not found' });
+  }
+
+  try {
+    const { safetyManager } = await import('../services/safety.js');
+    const stats = safetyManager.getAccountStats(accountId);
+    res.json(stats);
+  } catch (error: any) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
 router.get('/conversations/:id', (req: Request, res: Response) => {
   const conversation = getConversationById(parseInt(req.params.id));
   if (!conversation) {

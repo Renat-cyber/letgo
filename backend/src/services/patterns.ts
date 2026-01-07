@@ -171,6 +171,8 @@ export async function executePattern(
     throw new Error('Pattern not found');
   }
 
+  const { safetyManager } = await import('./safety.js');
+
   // Создаём запись выполнения
   const result = db.prepare(`
     INSERT INTO pattern_executions (pattern_id, account_id, status, started_at)
@@ -185,6 +187,11 @@ export async function executePattern(
       for (let i = 0; i < pattern.actions.length; i++) {
         const action = pattern.actions[i];
         
+        // Проверка лимитов безопасности
+        if (!safetyManager.canPerformAction(accountId, 'action')) {
+          throw new Error('Action limit reached. Please wait before continuing.');
+        }
+        
         // Обновляем текущее действие
         db.prepare(`
           UPDATE pattern_executions SET current_action = ? WHERE id = ?
@@ -197,15 +204,20 @@ export async function executePattern(
           throw new Error(`Action ${i + 1} (${action.type}) failed`);
         }
 
-        // Задержка после действия
-        if (action.delayAfterMs > 0) {
-          await sleep(action.delayAfterMs);
-        }
+        // Логируем действие
+        safetyManager.logAction(accountId, 'action');
+        
+        // Задержка после действия с рандомизацией
+        const baseDelay = action.delayAfterMs > 0 ? action.delayAfterMs : 1000;
+        const randomizedDelay = baseDelay + safetyManager.getRandomDelay();
+        await sleep(randomizedDelay);
       }
 
-      // Задержка между повторениями
-      if (repeat < pattern.repeatCount - 1 && pattern.delayBetweenMs > 0) {
-        await sleep(pattern.delayBetweenMs);
+      // Задержка между повторениями с рандомизацией
+      if (repeat < pattern.repeatCount - 1) {
+        const baseDelay = pattern.delayBetweenMs > 0 ? pattern.delayBetweenMs : 2000;
+        const randomizedDelay = baseDelay + safetyManager.getRandomDelay();
+        await sleep(randomizedDelay);
       }
     }
 

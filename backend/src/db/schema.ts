@@ -143,6 +143,10 @@ export function initializeDatabase() {
     ['ai_max_tokens', '150'],
     ['pattern_default_delay', '1500'],
     ['notification_chat_id', ''],
+    ['safety_min_delay', '3000'],
+    ['safety_max_delay', '8000'],
+    ['safety_actions_per_hour', '30'],
+    ['safety_messages_per_hour', '20'],
   ];
 
   const insertSetting = db.prepare('INSERT OR IGNORE INTO settings (key, value) VALUES (?, ?)');

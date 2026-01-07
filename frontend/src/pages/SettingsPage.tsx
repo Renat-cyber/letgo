@@ -8,7 +8,8 @@ import {
   Bell, 
   TestTube,
   Send,
-  RefreshCw
+  RefreshCw,
+  Shield
 } from 'lucide-react';
 import { api, Settings } from '../lib/api';
 
@@ -254,6 +255,89 @@ export default function SettingsPage() {
             max="10000"
             step="100"
           />
+        </div>
+      </div>
+
+      {/* Safety Settings */}
+      <div className="card-cyber rounded-xl p-6">
+        <div className="flex items-center gap-2 mb-6">
+          <Shield className="w-6 h-6 text-neon-green" />
+          <h2 className="font-display font-bold text-xl text-white">Защита от блокировок</h2>
+        </div>
+
+        <div className="space-y-4">
+          <div className="p-4 bg-yellow-500/10 border border-yellow-500/30 rounded-lg">
+            <p className="text-sm text-yellow-400">
+              ⚠️ <strong>Важно:</strong> Эти настройки помогают избежать блокировок Telegram. 
+              Увеличьте задержки и уменьшите лимиты для максимальной безопасности.
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+              <label className="block text-sm font-mono text-dark-500 mb-2">
+                Минимальная задержка (мс)
+              </label>
+              <input
+                type="number"
+                value={localSettings.safety_min_delay || '3000'}
+                onChange={(e) => setLocalSettings({ ...localSettings, safety_min_delay: e.target.value })}
+                className="input-cyber w-full"
+                min="1000"
+                max="10000"
+                step="500"
+              />
+              <p className="text-xs text-dark-500 mt-1">Минимум 3-5 секунд рекомендуется</p>
+            </div>
+
+            <div>
+              <label className="block text-sm font-mono text-dark-500 mb-2">
+                Максимальная задержка (мс)
+              </label>
+              <input
+                type="number"
+                value={localSettings.safety_max_delay || '8000'}
+                onChange={(e) => setLocalSettings({ ...localSettings, safety_max_delay: e.target.value })}
+                className="input-cyber w-full"
+                min="2000"
+                max="20000"
+                step="500"
+              />
+              <p className="text-xs text-dark-500 mt-1">Максимум 8-15 секунд рекомендуется</p>
+            </div>
+
+            <div>
+              <label className="block text-sm font-mono text-dark-500 mb-2">
+                Действий в час (макс)
+              </label>
+              <input
+                type="number"
+                value={localSettings.safety_actions_per_hour || '30'}
+                onChange={(e) => setLocalSettings({ ...localSettings, safety_actions_per_hour: e.target.value })}
+                className="input-cyber w-full"
+                min="10"
+                max="100"
+                step="5"
+              />
+              <p className="text-xs text-dark-500 mt-1">Лайки, дизлайки, клики</p>
+            </div>
+
+            <div>
+              <label className="block text-sm font-mono text-dark-500 mb-2">
+                Сообщений в час (макс)
+              </label>
+              <input
+                type="number"
+                value={localSettings.safety_messages_per_hour || '20'}
+                onChange={(e) => setLocalSettings({ ...localSettings, safety_messages_per_hour: e.target.value })}
+                className="input-cyber w-full"
+                min="5"
+                max="50"
+                step="5"
+              />
+              <p className="text-xs text-dark-500 mt-1">AI и ручные сообщения</p>
+            </div>
+          </div>
         </div>
       </div>
 

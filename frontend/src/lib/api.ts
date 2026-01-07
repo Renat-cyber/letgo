@@ -107,5 +107,9 @@ export interface Settings {
   ai_max_tokens: string;
   pattern_default_delay: string;
   notification_chat_id: string;
-  frontend_url: string;
+  frontend_url?: string;
+  safety_min_delay?: string;
+  safety_max_delay?: string;
+  safety_actions_per_hour?: string;
+  safety_messages_per_hour?: string;
 }

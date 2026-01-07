@@ -221,10 +221,24 @@ class TelegramClientManager extends EventEmitter {
     // Проверяем AI режим
     if (account.aiEnabled && conversation.aiMode) {
       try {
+        const { safetyManager } = await import('./safety.js');
+        
+        // Проверка лимитов перед отправкой
+        if (!safetyManager.canPerformAction(account.id, 'message')) {
+          console.warn(`⚠️ Message limit reached for account ${account.sessionId}`);
+          return;
+        }
+        
+        // Задержка перед генерацией ответа
+        await safetyManager.randomDelay();
+        
         const response = await generateAIResponse(conversation.id, text);
         
         // Отправляем ответ
         await this.sendMessage(account.sessionId, chatId, response);
+        
+        // Логируем отправку
+        safetyManager.logAction(account.id, 'message');
         
         // Сохраняем ответ
         addMessage(conversation.id, 'assistant', response);
